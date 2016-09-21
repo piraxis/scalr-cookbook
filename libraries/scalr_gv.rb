@@ -52,6 +52,8 @@ module Scalr
     gv_doc.elements.each('response/roles') do |element|
       global_variables[element.attributes["name"]] = element.text
     end
+    
+    global_variables = Hash.from_xml(gv_response)
 
     global_variables
   end
