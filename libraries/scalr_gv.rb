@@ -29,6 +29,32 @@ module Scalr
 
     global_variables
   end
+
+  def self.role_variables(node=nil)
+
+    # Optionally submit the node, in which case we'll look for an override
+    unless node.nil?
+      override_gv = node.fetch(:scalr, Hash.new).fetch(:override_gv, nil)
+      unless override_gv.nil?
+        return override_gv
+      end
+    end
+
+    # Retrieve Global Variables
+    # We use szradm and not environment variables so that we can run
+    # in a standalone chef-client run
+    p = Chef::Mixin::ShellOut.shell_out 'szradm',  '-q', 'list-roles'
+    gv_response = p.stdout
+    gv_doc = REXML::Document.new gv_response
+
+    # Parse and return Global Variables
+    global_variables = Hash.new
+    gv_doc.elements.each('response/roles/role') do |element|
+      global_variables[element.attributes["name"]] = element.text
+    end
+
+    global_variables
+  end
 end
 
 
