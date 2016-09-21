@@ -49,7 +49,7 @@ module Scalr
 
     # Parse and return Global Variables
     global_variables = Hash.new
-    gv_doc.elements.each('response/roles/role') do |element|
+    gv_doc.elements.each('response/roles') do |element|
       global_variables[element.attributes["name"]] = element.text
     end
 
